@@ -19,13 +19,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/andela/zeit/lib"
 	"github.com/kjk/betterguid"
 	au "github.com/logrusorgru/aurora"
 	"github.com/spf13/cobra"
-	"github.com/andela/zeit/lib"
 )
-
-
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{

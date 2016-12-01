@@ -2,18 +2,21 @@ package lib
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/kjk/betterguid"
 	"io/ioutil"
 	"os"
-
-	"github.com/kjk/betterguid"
 )
 
 var JavascriptISOString = "2006-01-02T15:04:05.999Z07:00"
 
+type User struct {
+	Id    string `json:"id"`
+	Token string `json:"token"`
+}
+
 type Config struct {
-	ID           string     `json:"id"`
-	Token        string     `json:"token"`
-	Name         string     `json:"name"`
+	CurrentUser  User       `json:"user"`
 	CurrentEntry string     `json:"current_entry"`
 	Projects     []KeyValue `json:"projects"`
 	Tags         []KeyValue `json:"tags"`
@@ -29,6 +32,7 @@ func (c *Config) Save() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("Config Saved!")
 }
 
 func (c *Config) ContainTag(name string) bool {
@@ -65,11 +69,20 @@ func NewConfigFromFile() *Config {
 	config := Config{}
 	b, err := ioutil.ReadFile(os.ExpandEnv("$HOME/.zeit/config.json"))
 	if err != nil {
-		panic(err)
-	}
-	err = json.Unmarshal(b, &config)
-	if err != nil {
+		createDirectory()
+	} else if err = json.Unmarshal(b, &config); err != nil {
 		panic(err)
 	}
 	return &config
+}
+
+func createDirectory() {
+	rootPath := os.ExpandEnv("$HOME/.zeit")
+	if err := os.MkdirAll(rootPath, 0777); err != nil {
+		panic(err)
+	} else if _, err := os.Create(rootPath + "/config.json"); err != nil {
+		panic(err)
+	} else {
+		ioutil.WriteFile(rootPath+"/config.json", []byte("{}"), 0777)
+	}
 }

@@ -1,0 +1,9 @@
+package: github.com/andela/zeit
+import:
+- package: github.com/kjk/betterguid
+- package: github.com/logrusorgru/aurora
+- package: github.com/spf13/cobra
+- package: github.com/spf13/viper
+- package: github.com/skratchdot/open-golang
+  subpackages:
+  - open
