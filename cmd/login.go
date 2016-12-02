@@ -3,7 +3,6 @@ package cmd
 import (
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
 	"github.com/andela/zeit/lib"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
@@ -37,26 +36,26 @@ func authenticateUser(config *lib.Config) {
 }
 
 func retrieveUserInfo(token string) (lib.User, error) {
-	req, error := http.NewRequest("GET", "https://api-staging.andela.com/api/v1/users/me", nil)
+	req, err := http.NewRequest("GET", "https://api-staging.andela.com/api/v1/users/me", nil)
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	client := &http.Client{Transport: tr}
 
-	if error != nil {
-		fmt.Errorf("Error occured making request")
+	if err != nil {
+		panic(err)
 	} else {
 		bearerToken := "Bearer " + token
 		req.Header.Add("Authorization", bearerToken)
-		if res, err := client.Do(req); error != nil {
+		if res, err := client.Do(req); err != nil {
 			panic(err)
 		} else {
 			bytes, _ := ioutil.ReadAll(res.Body)
 			defer res.Body.Close()
-			error = json.Unmarshal(bytes, &user)
+			err = json.Unmarshal(bytes, &user)
 		}
 	}
-	return user, error
+	return user, err
 }
 
 func login(cmd *cobra.Command, args []string) {

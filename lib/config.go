@@ -21,6 +21,7 @@ type Config struct {
 	Projects     []KeyValue `json:"projects"`
 	Tags         []KeyValue `json:"tags"`
 	NewTags      []KeyValue `json:"new_tags"`
+	Entries		 []string    `json:"entries"`
 }
 
 func (c *Config) Save() {
@@ -65,24 +66,49 @@ func (c *Config) ContainProject(name string) (bool, KeyValue) {
 	return contains, project
 }
 
+func (c *Config) AddEntry(entry *Entry) {
+	id := entry.ID
+	c.Entries = append(c.Entries, id)
+}
+
+func (c *Config) GetCurrentEntry() (*Entry, error) {
+	entry := &Entry{}
+	if c.CurrentEntry == "" {
+		return nil, nil
+	}
+	currentEntryPath := os.ExpandEnv("$HOME/.zeit/"+c.CurrentEntry+".json")
+	bytes, err := ioutil.ReadFile(currentEntryPath)
+	if err != nil {
+		panic(err)
+	} else {
+		err = json.Unmarshal(bytes, entry)
+	}
+	return entry, err
+}
+
 func NewConfigFromFile() *Config {
 	config := Config{}
 	b, err := ioutil.ReadFile(os.ExpandEnv("$HOME/.zeit/config.json"))
 	if err != nil {
-		createDirectory()
+		config := getMockConfig();
+		createDirectory(config)
+		return config
 	} else if err = json.Unmarshal(b, &config); err != nil {
 		panic(err)
 	}
 	return &config
 }
 
-func createDirectory() {
+func createDirectory(config *Config) {
 	rootPath := os.ExpandEnv("$HOME/.zeit")
 	if err := os.MkdirAll(rootPath, 0777); err != nil {
 		panic(err)
-	} else if _, err := os.Create(rootPath + "/config.json"); err != nil {
-		panic(err)
 	} else {
-		ioutil.WriteFile(rootPath+"/config.json", []byte("{}"), 0777)
+		bytes, err := json.Marshal(config)
+		if err != nil {
+			panic(err)
+		} else {
+			ioutil.WriteFile(rootPath+"/config.json", bytes, 0777)
+		}
 	}
 }
