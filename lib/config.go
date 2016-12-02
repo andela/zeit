@@ -86,6 +86,18 @@ func (c *Config) GetCurrentEntry() (*Entry, error) {
 	return entry, err
 }
 
+func (c *Config) GetEntryByName(entryName string) (*Entry, error) {
+	entry := &Entry{}
+	currentEntryPath := os.ExpandEnv("$HOME/.zeit/"+entryName+".json")
+	bytes, err := ioutil.ReadFile(currentEntryPath)
+	if err != nil {
+		return entry, err
+	} else {
+		err = json.Unmarshal(bytes, entry)
+	}
+	return entry, err
+}
+
 func NewConfigFromFile() *Config {
 	config := Config{}
 	b, err := ioutil.ReadFile(os.ExpandEnv("$HOME/.zeit/config.json"))

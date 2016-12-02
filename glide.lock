@@ -1,10 +1,12 @@
-hash: 46d049da070f0b09173f1456bfb3ad7459e201af13bcf0643f4f67694b10db0c
-updated: 2016-12-01T02:44:46.46501501+01:00
+hash: 987d077aa817fe0b45e9b9cc55e6a35beb43b60ad578d0fcec5293e77a070535
+updated: 2016-12-02T17:24:36.194065876+01:00
 imports:
+- name: github.com/dustin/go-humanize
+  version: 2064d2b8b5e33b3e5d175b3d9c5b90ba7b212665
 - name: github.com/fsnotify/fsnotify
   version: fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197
 - name: github.com/hashicorp/hcl
-  version: ae25c981c128d7a7a5241e3b7d7409089355df69
+  version: 37ab263305aaeb501a60eb16863e808d426e37f2
   subpackages:
   - hcl/ast
   - hcl/parser
@@ -27,7 +29,7 @@ imports:
 - name: github.com/pelletier/go-buffruneio
   version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
 - name: github.com/pelletier/go-toml
-  version: 7cb988051d5045890cb91402a0b5fddc76c627bc
+  version: d464759235b8fd59f8ab4c44807d7c36e1678add
 - name: github.com/skratchdot/open-golang
   version: 75fb7ed4208cf72d323d7d02fd1a5964a7a9073c
   subpackages:

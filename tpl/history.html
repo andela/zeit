@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Zeit History</title>
+    </head>
+    <body>
+    	<h1>Projects</h1>
+        {{range .}}
+            <h2>Started {{.Start | dateformat }}</h1>
+            <h3>Details Below: </h3>
+            <ul>
+                <li>ID: {{.ID}}</li>
+                <li>Project ID: {{.ProjectID}}</li>
+                <li>Project Name: {{.ProjectName}}</li>
+                <li>Duration: {{.Duration}}</li>
+            </ul>
+        {{end}}
+    </body>
+</html>

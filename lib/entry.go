@@ -9,6 +9,7 @@ import (
 
 	"github.com/kjk/betterguid"
 	au "github.com/logrusorgru/aurora"
+	"github.com/andela/zeit/utility"
 )
 
 type KeyValue struct {
@@ -70,8 +71,7 @@ func (entry *Entry) StartTracking(projectName string, tags []string, config *Con
 	} else if (currentEntry != nil) && (err == nil) {
 		duration := int(getTimeDifference(currentEntry.Start).Hours())
 		if (duration < 24) || (currentEntry.ProjectName == projectName) {
-			start, _ := time.Parse(JavascriptISOString, currentEntry.Start)
-			startString := au.Cyan(start.Format("15:04"))
+			startString := au.Cyan(utility.FormatToBasicTime(currentEntry.Start))
 			return fmt.Errorf("Project %s has already been started at %s", currentEntry.ProjectName, startString)
 		}
 	}
