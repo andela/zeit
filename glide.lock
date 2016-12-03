@@ -1,6 +1,8 @@
-hash: 987d077aa817fe0b45e9b9cc55e6a35beb43b60ad578d0fcec5293e77a070535
-updated: 2016-12-02T17:24:36.194065876+01:00
+hash: 7cd076ac0665b738de76b80038f044ee5c0902fe7e94f0b839296738ba9d5122
+updated: 2016-12-02T17:58:22.212752821+01:00
 imports:
+- name: github.com/ctcpip/notifize
+  version: 89b506bbcaf11bc5ffd34e2ec1a1274f4e31147f
 - name: github.com/dustin/go-humanize
   version: 2064d2b8b5e33b3e5d175b3d9c5b90ba7b212665
 - name: github.com/fsnotify/fsnotify

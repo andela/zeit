@@ -8,3 +8,5 @@ import:
   subpackages:
   - open
 - package: github.com/dustin/go-humanize
+- package: github.com/ctcpip/notifize
+  version: ^1.0.0

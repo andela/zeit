@@ -79,7 +79,7 @@ func (c *Config) GetCurrentEntry() (*Entry, error) {
 	currentEntryPath := os.ExpandEnv("$HOME/.zeit/"+c.CurrentEntry+".json")
 	bytes, err := ioutil.ReadFile(currentEntryPath)
 	if err != nil {
-		panic(err)
+		return nil, err
 	} else {
 		err = json.Unmarshal(bytes, entry)
 	}
