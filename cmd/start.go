@@ -16,6 +16,10 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 
@@ -25,63 +29,83 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// startCmd represents the start command
+var notify bool
+var interval int
+
+func startFunction(cmd *cobra.Command, tags []string) {
+	projectName := cmd.Flag("project").Value.String()
+	config := lib.NewConfigFromFile()
+	entry := &lib.Entry{
+		ID: betterguid.New()[1:],
+	}
+	err := entry.StartTracking(projectName, tags, config)
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		currentTime := au.Cyan(time.Now().Format("15:04"))
+		fmt.Printf(
+			"Starting Project %s with tags [ %s ] at %s\n",
+			projectName,
+			strings.Join(tags, " "),
+			au.Bold(currentTime),
+		)
+
+		if notify {
+			startNotificationTimer()
+		}
+	}
+}
+
+func startNotificationTimer() {
+	_, err := getBytesFromScript()
+	if err != nil {
+		writeToScript()
+	}
+	startScript()
+}
+
+func getBytesFromScript() (os.FileInfo, error) {
+	return os.Stat(os.ExpandEnv("$HOME/.zeit/notify.sh"))
+}
+
+func writeToScript() {
+	workDir, _ := os.Getwd()
+	workDir = workDir + "/notify.sh"
+	bytes, err := ioutil.ReadFile(workDir)
+	if err != nil {
+		panic(err)
+	} else {
+		err := ioutil.WriteFile(os.ExpandEnv("$HOME/.zeit/notify.sh"), bytes, 0777)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func startScript() {
+	cmd := exec.Command("nohup", os.ExpandEnv("$HOME/.zeit/notify.sh"), strconv.Itoa(interval))
+	err := cmd.Start()
+	if err == nil {
+		processId := cmd.Process.Pid
+		storeProcessId(processId)
+	}
+}
+
+func storeProcessId(processId int) {
+	bytes := []byte(strconv.Itoa(processId))
+	ioutil.WriteFile(os.ExpandEnv("$HOME/.zeit/pid.txt"), bytes, 0777)
+}
+
 var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start tracking time",
 	Long:  `Full tracking description`,
-	Run: func(cmd *cobra.Command, tags []string) {
-		projectName := cmd.Flag("project").Value.String()
-		config := lib.NewConfigFromFile()
-		entry := &lib.Entry{
-			ID: betterguid.New()[1:],
-		}
-		err := entry.StartTracking(projectName, tags, config)
-		if err != nil {
-			fmt.Println(err.Error())
-		} else {
-			currentTime := au.Cyan(time.Now().Format("15:04"))
-			fmt.Printf(
-				"Starting Project %s with tags [ %s ] at %s\n",
-				projectName,
-				strings.Join(tags, " "),
-				au.Bold(currentTime),
-			)
-		}
-	},
+	Run:   startFunction,
 }
 
 func init() {
 	RootCmd.AddCommand(startCmd)
-	// Here you will define your flags and configuration settings.
 	startCmd.Flags().StringP("project", "p", "", "Name of project to track")
-	// config := Config{
-	// 	ID:           betterguid.New(),
-	// 	Token:        "some strings",
-	// 	Name:         "Okonkwo Ikem",
-	// 	CurrentEntry: "",
-	// 	Projects: []KeyValue{
-	// 		KeyValue{ID: betterguid.New(), Name: "core infrastructure"},
-	// 		KeyValue{ID: betterguid.New(), Name: "kaizen"},
-	// 		KeyValue{ID: betterguid.New(), Name: "allocations"},
-	// 		KeyValue{ID: betterguid.New(), Name: "skilltree"},
-	// 		KeyValue{ID: betterguid.New(), Name: "path"},
-	// 	},
-	// 	Tags: []KeyValue{
-	// 		KeyValue{ID: betterguid.New(), Name: "core"},
-	// 		KeyValue{ID: betterguid.New(), Name: "hack"},
-	// 		KeyValue{ID: betterguid.New(), Name: "skill"},
-	// 		KeyValue{ID: betterguid.New(), Name: "kaiz"},
-	// 		KeyValue{ID: betterguid.New(), Name: "zeit"},
-	// 	},
-	// 	NewTags: []KeyValue{},
-	// }
-	// b, _ := json.Marshal(config)
-	// ioutil.WriteFile(os.ExpandEnv("$HOME/.zeit/config.json"), b, 0644)
-	// startCmd.Flags().String("tag", "t", "New tag of tracked project")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
+	startCmd.Flags().BoolVarP(&notify, "notify", "n", false, "On/Off Notifications")
+	startCmd.Flags().IntVarP(&interval, "interval", "i", 30, "Specify Interval in Minutes default 30 minutes")
 }

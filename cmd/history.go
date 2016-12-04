@@ -1,17 +1,17 @@
 package cmd
 
 import (
-	"os"
-	"html/template"
-	"github.com/spf13/cobra"
 	"github.com/andela/zeit/lib"
-	"github.com/skratchdot/open-golang/open"
 	"github.com/andela/zeit/utility"
+	"github.com/skratchdot/open-golang/open"
+	"github.com/spf13/cobra"
+	"html/template"
+	"os"
 )
 
 var numberOfEntries int
 
-func history (cmd *cobra.Command, args []string) {
+func history(cmd *cobra.Command, args []string) {
 	config := lib.NewConfigFromFile()
 	filePath := os.ExpandEnv("$HOME/.zeit/history.html")
 	file, err := os.Create(filePath)
@@ -34,7 +34,7 @@ func history (cmd *cobra.Command, args []string) {
 	t = t.Funcs(template.FuncMap{"dateformat": utility.FormatToDateTime})
 
 	t = template.Must(t.ParseFiles("tpl/history.html"))
-	
+
 	err = t.ExecuteTemplate(file, "history.html", entries)
 	if err != nil {
 		panic(err)
@@ -46,8 +46,8 @@ func history (cmd *cobra.Command, args []string) {
 var historyCmd = &cobra.Command{
 	Use:   "history",
 	Short: "View your entries",
-	Long: `View all your entries in the browser. This defaults to 10 latest entries`,
-	Run: history,
+	Long:  `View all your entries in the browser. This defaults to 10 latest entries`,
+	Run:   history,
 }
 
 func init() {

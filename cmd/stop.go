@@ -16,6 +16,9 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
 	"time"
 
 	"github.com/andela/zeit/lib"
@@ -45,23 +48,49 @@ var stopCmd = &cobra.Command{
 				au.Bold(au.Green(fmt.Sprintf("%d:%d", time.Now().Hour(), time.Now().Minute()))),
 				entry.Duration(),
 			)
+			cleanUpAllRunningNotifications()
 		} else {
 			fmt.Print("You are not logging time\n")
 		}
 	},
 }
 
+func cleanUpAllRunningNotifications() {
+	err := checkScriptExists()
+	if err != nil {
+		os.Exit(1)
+	}
+	writeScriptToFile()
+	killRunningScript()
+}
+
+func writeScriptToFile() {
+	bytes, err := ioutil.ReadFile(os.ExpandEnv("$HOME/.zeit/pid.txt"))
+	script := fmt.Sprintf("kill -9 %s", string(bytes))
+	if err != nil {
+		os.Exit(1)
+	} else {
+		err = ioutil.WriteFile(os.ExpandEnv("$HOME/.zeit/stop.sh"), []byte(script), 0777)
+		if err != nil {
+			os.Exit(1)
+		}
+	}
+}
+
+func checkScriptExists() error {
+	_, err := os.Stat(os.ExpandEnv("$HOME/.zeit/pid.txt"))
+	return err
+}
+
+func killRunningScript() {
+	cmd := exec.Command("nohup", os.ExpandEnv("$HOME/.zeit/stop.sh"))
+	err := cmd.Start()
+	if err == nil {
+		fmt.Println("All timers succesfully closed!")
+	}
+}
+
 func init() {
 	RootCmd.AddCommand(stopCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// stopCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// stopCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 }

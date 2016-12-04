@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/andela/zeit/utility"
 	"github.com/kjk/betterguid"
 	au "github.com/logrusorgru/aurora"
-	"github.com/andela/zeit/utility"
 )
 
 type KeyValue struct {

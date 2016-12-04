@@ -1,30 +1,16 @@
-// Copyright © 2016 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
 	"fmt"
-	"os"
-	"log"
-	"time"
-	"regexp"
-	"html/template"
-	"github.com/spf13/cobra"
-	"github.com/skratchdot/open-golang/open"
-	"github.com/andela/zeit/utility"
 	"github.com/andela/zeit/lib"
+	"github.com/andela/zeit/utility"
+	"github.com/skratchdot/open-golang/open"
+	"github.com/spf13/cobra"
+	"html/template"
+	"log"
+	"os"
+	"regexp"
+	"time"
 )
 
 var start string
@@ -33,12 +19,12 @@ var JavascriptISOString = "2006-01-02T15:04:05.999Z07:00"
 
 func entries(cmd *cobra.Command, args []string) {
 	if start != "" && end != "" {
-        startDate, endDate := getStartAndEndDate(start, end)
-        entriesRange := getEntriesRange(startDate, endDate)
-        previewEntries(entriesRange)
-    } else{
-        log.Fatalf("You must specify both a start and an end date flags")
-    }
+		startDate, endDate := getStartAndEndDate(start, end)
+		entriesRange := getEntriesRange(startDate, endDate)
+		previewEntries(entriesRange)
+	} else {
+		log.Fatalf("You must specify both a start and an end date flags")
+	}
 }
 
 func getEntriesRange(start time.Time, end time.Time) []lib.Entry {
@@ -78,35 +64,33 @@ func getOrCreateFile() (string, *os.File) {
 	return filePath, file
 }
 
-
-
 func getStartAndEndDate(args ...string) (time.Time, time.Time) {
 	var dateHolder []time.Time
-	patt1 := regexp.MustCompile("(\\w{3})\\s(\\w{2})$") // Match 'JAN 02'
-	patt2 := regexp.MustCompile("(\\w{3})\\s(\\w{4})$") // Match 'JAN 2016'
+	patt1 := regexp.MustCompile("(\\w{3})\\s(\\w{2})$")            // Match 'JAN 02'
+	patt2 := regexp.MustCompile("(\\w{3})\\s(\\w{4})$")            // Match 'JAN 2016'
 	patt3 := regexp.MustCompile("(\\w{3})\\s(\\w{2})\\s(\\w{4})$") // Match 'JAN 02 2016'
-	patt4 := regexp.MustCompile("(\\d{2})-(\\d{2})-(\\d{4})$") // Match '01-08-3016'
+	patt4 := regexp.MustCompile("(\\d{2})-(\\d{2})-(\\d{4})$")     // Match '01-08-3016'
 	patt5 := regexp.MustCompile("(\\d{2})\\/(\\d{2})\\/(\\d{4})$") // Match '01/08/2016'
 	for _, arg := range args {
 		switch {
-			case len(patt1.FindStringSubmatch(arg)) > 0:
-				arg = fmt.Sprintf("%s %v", arg, time.Now().Year())
-				t, _ := time.Parse("Jan 02 2006", arg)
-				dateHolder = append(dateHolder, t)
-			case len(patt2.FindStringSubmatch(arg)) > 0:
-				t, _ := time.Parse("Jan 2006", arg)
-				dateHolder = append(dateHolder, t)
-			case len(patt3.FindStringSubmatch(arg)) > 0:
-				t, _ := time.Parse("Jan 02 2006", arg)
-				dateHolder = append(dateHolder, t)
-			case len(patt4.FindStringSubmatch(arg)) > 0:
-				t, _ := time.Parse("02-01-06", arg)
-				dateHolder = append(dateHolder, t)
-			case len(patt5.FindStringSubmatch(arg)) > 0:
-				t, _ := time.Parse("02/01/06", arg)
-				dateHolder = append(dateHolder, t)
-			default:
-				log.Fatalf("Date %s did not match any of the formats, please check valid formats using 'zeit entries --help'", arg);
+		case len(patt1.FindStringSubmatch(arg)) > 0:
+			arg = fmt.Sprintf("%s %v", arg, time.Now().Year())
+			t, _ := time.Parse("Jan 02 2006", arg)
+			dateHolder = append(dateHolder, t)
+		case len(patt2.FindStringSubmatch(arg)) > 0:
+			t, _ := time.Parse("Jan 2006", arg)
+			dateHolder = append(dateHolder, t)
+		case len(patt3.FindStringSubmatch(arg)) > 0:
+			t, _ := time.Parse("Jan 02 2006", arg)
+			dateHolder = append(dateHolder, t)
+		case len(patt4.FindStringSubmatch(arg)) > 0:
+			t, _ := time.Parse("02-01-06", arg)
+			dateHolder = append(dateHolder, t)
+		case len(patt5.FindStringSubmatch(arg)) > 0:
+			t, _ := time.Parse("02/01/06", arg)
+			dateHolder = append(dateHolder, t)
+		default:
+			log.Fatalf("Date %s did not match any of the formats, please check valid formats using 'zeit entries --help'", arg)
 		}
 	}
 	return dateHolder[0], dateHolder[1]
@@ -124,7 +108,7 @@ zeit entries --start 'JAN 02' --end 'NOV 03 2016' OR
 zeit entries --start 'JAN 2016' --end 'NOV 2016' OR
 zeit entries --start 'JAN 02 2016' --end 'NOV 30 2016' OR
 zeit entries --start '01-08-2016' --end '02-09-2016' OR
-zeit entries --start '01/08/2016' --end '02/09/2016' OR
+zeit entries --start '01/08/2016' --end '02/09/2016'
 	`,
 	Run: entries,
 }
