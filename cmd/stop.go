@@ -24,6 +24,7 @@ import (
     "github.com/andela/zeit/lib"
     au "github.com/logrusorgru/aurora"
     "github.com/spf13/cobra"
+    "github.com/andela/zeit/utility"
 )
 
 // stopCmd represents the stop command
@@ -45,12 +46,12 @@ var stopCmd = &cobra.Command{
                 "Stopping Project %s with tags [%s] at %s - Duration %s\n",
                 entry.ProjectName,
                 tags,
-                au.Bold(au.Green(fmt.Sprintf("%d:%d", time.Now().Hour(), time.Now().Minute()))),
-                entry.Duration(),
+                au.Cyan(utility.FormatTimeToBasicString(time.Now())),
+                au.Cyan(entry.Duration()),
             )
             cleanUpAllRunningNotifications()
         } else {
-            fmt.Print("You are not logging time\n")
+            fmt.Print(au.Red("You are not logging time\n"))
         }
     },
 }
@@ -86,7 +87,7 @@ func killRunningScript() {
     cmd := exec.Command("nohup", os.ExpandEnv("$HOME/.zeit/stop.sh"))
     err := cmd.Start()
     if err == nil {
-        fmt.Println("All timers succesfully closed!")
+        fmt.Println(au.Brown("All timers succesfully closed!"))
     }
 }
 

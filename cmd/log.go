@@ -122,7 +122,7 @@ zeit log [--today] [--yesterday] [--date arg] [--project ProjectName] numberofHo
 
 zeit log --today --project Zhisi 10.00
 zeit log --yesterday --project Zhisi 9.30
-zeit log --date '01-02-16' --project Zhisi 8.20
+zeit log --date '01-02-16' --project Skilltree 8.20
     `,
     Run: logHours,
 }

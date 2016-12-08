@@ -11,6 +11,7 @@ import (
     "os"
     "regexp"
     "time"
+    au "github.com/logrusorgru/aurora"
 )
 
 var (
@@ -67,14 +68,21 @@ func previewEntriesInBrowser(entries []lib.Entry) {
 }
 
 func previewEntriesInCli(entries []lib.Entry) {
-    entryString := ""
+    fmt.Println(au.Bold("                                      Entries                                         "))
     for _, entry := range entries {
-        entryString += "Project: "+ entry.ProjectName+ "\n"
-        entryString += "Project ID: "+ entry.ProjectID+ "\n"
-        entryString += "Start Date: "+ utility.FormatToDateTime(entry.Start)+ "\n"
-        entryString += "Duration: "+ entry.Duration()+ "\n\n"
+        fmt.Printf(
+            "%s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n\n",
+            au.Bold("---------------------------------------------------------------------------------------"),
+            au.Bold("Project"),
+            au.Cyan(entry.ProjectName),
+            au.Bold("Project ID"),
+            au.Cyan(entry.ProjectID),
+            au.Bold("Start Date"),
+            au.Cyan(utility.FormatToDateTime(entry.Start)),
+            au.Bold("Duration"),
+            au.Cyan(entry.Duration()),
+        )
     }
-    fmt.Println(entryString)
 }
 
 

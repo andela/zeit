@@ -15,6 +15,10 @@ func FormatToBasicTime(input string) string {
 	return t.Format("15:04")
 }
 
+func FormatTimeToBasicString(t time.Time) string {
+    return t.Format("15:04")
+}
+
 func FormatToDateTime(input string) string {
 	t, _ := time.Parse(JavascriptISOString, input)
 	return humanize.Time(t)
@@ -39,4 +43,8 @@ func FormatToHourMinutes(duration time.Duration) string {
     minutes := math.Mod(duration.Minutes(), 60)
     hours := duration.Minutes() / 60
     return fmt.Sprintf("%d hours %d minutes", int(hours), int(minutes))
+}
+
+func FormatTimeToHourMinutes(t time.Time) string {
+    return t.Format("15 hours 04 minues")
 }

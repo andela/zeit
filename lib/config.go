@@ -2,7 +2,6 @@ package lib
 
 import (
     "encoding/json"
-    "fmt"
     "github.com/kjk/betterguid"
     "io/ioutil"
     "os"
@@ -113,7 +112,6 @@ func (c *Config) GetEntryByName(entryName string) (*Entry, error) {
 
 func (c *Config) GetEntriesByDate(entryDate time.Time) []Entry {
     var entries []Entry
-    fmt.Println(c.Entries)
     for _, basicEntry := range c.Entries {
         _entryDate, _ := time.Parse(JavascriptISOString, basicEntry.Date)
         if utility.EqualDates(entryDate, _entryDate) {

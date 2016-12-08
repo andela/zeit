@@ -6,6 +6,7 @@ import (
     "github.com/skratchdot/open-golang/open"
     "github.com/spf13/cobra"
     "html/template"
+    au "github.com/logrusorgru/aurora"
     "fmt"
     "os"
 )
@@ -42,15 +43,22 @@ func previewHistory(entries []lib.Entry, file *os.File, filePath string){
     }
 }
 
-func previewHistoryInCli(entries []lib.Entry){
-    entryString := ""
+func previewHistoryInCli(entries []lib.Entry) {
+    fmt.Println(au.Bold("                                      History                                         "))
     for _, entry := range entries {
-        entryString += "Project: "+ entry.ProjectName+ "\n"
-        entryString += "Project ID: "+ entry.ProjectID+ "\n"
-        entryString += "Start Date: "+ utility.FormatToDateTime(entry.Start)+ "\n"
-        entryString += "Duration: "+ entry.Duration()+ "\n\n"
+        fmt.Printf(
+            "%s\n%s: %s\n%s: %s\n%s: %s\n%s: %s\n\n",
+            au.Bold("---------------------------------------------------------------------------------------"),
+            au.Bold("Project"),
+            au.Cyan(entry.ProjectName),
+            au.Bold("Project ID"),
+            au.Cyan(entry.ProjectID),
+            au.Bold("Start Date"),
+            au.Cyan(utility.FormatToDateTime(entry.Start)),
+            au.Bold("Duration"),
+            au.Cyan(entry.Duration()),
+        )
     }
-    fmt.Println(entryString)
 }
 
 func previewHistoryInBrowser(entries []lib.Entry, file *os.File, filePath string) {

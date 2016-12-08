@@ -47,7 +47,7 @@ func startFunction(cmd *cobra.Command, tags []string) {
 			"Starting Project %s with tags [ %s ] at %s\n",
 			projectName,
 			strings.Join(tags, " "),
-			au.Bold(currentTime),
+			au.Cyan(currentTime),
 		)
 
 		if notify {
