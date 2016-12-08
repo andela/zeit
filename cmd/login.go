@@ -3,12 +3,12 @@ package cmd
 import (
 	"crypto/tls"
 	"encoding/json"
-	"fmt"
 	"github.com/andela/zeit/lib"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"net/http"
+	"fmt"
 )
 
 var user lib.User
@@ -24,7 +24,6 @@ func authenticateUser(config *lib.Config) {
 	cmdString := "https://api-staging.andela.com/login?redirect_url=http://localhost:8089"
 	open.Run(cmdString)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Printf("array %v", r.URL.Query()["token"])
 		token := r.URL.Query()["token"][0]
 		user, _ := retrieveUserInfo(token)
 		config := lib.NewConfigFromFile()
@@ -67,6 +66,7 @@ func login(cmd *cobra.Command, args []string) {
 		if err != nil {
 			authenticateUser(config)
 		}
+		fmt.Println("You are already logged in")
 	} else {
 		authenticateUser(config)
 	}
