@@ -19,13 +19,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/andela/zeit/lib"
 	"github.com/kjk/betterguid"
 	au "github.com/logrusorgru/aurora"
 	"github.com/spf13/cobra"
-	"github.com/andela/zeit/lib"
 )
-
-
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -36,13 +34,13 @@ var startCmd = &cobra.Command{
 		projectName := cmd.Flag("project").Value.String()
 		config := lib.NewConfigFromFile()
 		entry := &lib.Entry{
-			ID: betterguid.New(),
+			ID: betterguid.New()[1:],
 		}
 		err := entry.StartTracking(projectName, tags, config)
 		if err != nil {
-			fmt.Print(err.Error())
+			fmt.Println(err.Error())
 		} else {
-			currentTime := au.Green(fmt.Sprintf("%d:%d", time.Now().Hour(), time.Now().Minute()))
+			currentTime := au.Cyan(time.Now().Format("15:04"))
 			fmt.Printf(
 				"Starting Project %s with tags [ %s ] at %s\n",
 				projectName,

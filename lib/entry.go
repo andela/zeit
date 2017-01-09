@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/kjk/betterguid"
+	au "github.com/logrusorgru/aurora"
 )
 
 type KeyValue struct {
@@ -36,9 +37,13 @@ func NewEntryFromFile(id string) *Entry {
 	return &entry
 }
 
+func getTimeDifference(t string) time.Duration {
+	start, _ := time.Parse(JavascriptISOString, t)
+	return time.Now().Sub(start)
+}
+
 func (entry *Entry) Duration() string {
-	start, _ := time.Parse(JavascriptISOString, entry.Start)
-	duration := time.Now().Sub(start)
+	duration := getTimeDifference(entry.Start)
 	return fmt.Sprintf("%d hours %d minutes", int(duration.Hours()), int(duration.Minutes()))
 }
 
@@ -46,6 +51,7 @@ func (entry *Entry) StopTracking(config *Config) {
 	entry.Stop = time.Now().UTC().Format(JavascriptISOString)
 	entry.Save()
 	config.CurrentEntry = ""
+	config.AddEntry(entry)
 	config.Save()
 }
 
@@ -58,8 +64,16 @@ func (entry *Entry) StartTracking(projectName string, tags []string, config *Con
 	}
 
 	ok, project := config.ContainProject(projectName)
+	currentEntry, err := config.GetCurrentEntry()
 	if !ok {
 		return fmt.Errorf("Project %s does not exist or has not been assigned to you\n", projectName)
+	} else if (currentEntry != nil) && (err == nil) {
+		duration := int(getTimeDifference(currentEntry.Start).Hours())
+		if (duration < 24) || (currentEntry.ProjectName == projectName) {
+			start, _ := time.Parse(JavascriptISOString, currentEntry.Start)
+			startString := au.Cyan(start.Format("15:04"))
+			return fmt.Errorf("Project %s has already been started at %s", currentEntry.ProjectName, startString)
+		}
 	}
 	entry.Start = time.Now().UTC().Format(JavascriptISOString)
 	entry.ProjectID = project.ID

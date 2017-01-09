@@ -18,9 +18,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/andela/zeit/lib"
 	au "github.com/logrusorgru/aurora"
 	"github.com/spf13/cobra"
-	"github.com/andela/zeit/lib"
 )
 
 // stopCmd represents the stop command
