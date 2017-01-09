@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"net/http"
+	"fmt"
 )
 
 var user lib.User
@@ -23,6 +24,7 @@ func authenticateUser(config *lib.Config) {
 	cmdString := "https://api-staging.andela.com/login?redirect_url=http://localhost:8089"
 	open.Run(cmdString)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Printf("array %v", r.URL.Query()["token"])
 		token := r.URL.Query()["token"][0]
 		user, _ := retrieveUserInfo(token)
 		config := lib.NewConfigFromFile()
