@@ -7,3 +7,4 @@ import:
 - package: github.com/skratchdot/open-golang
   subpackages:
   - open
+- package: github.com/dustin/go-humanize
