@@ -3,12 +3,12 @@ package cmd
 import (
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"github.com/andela/zeit/lib"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"net/http"
-	"fmt"
 )
 
 var user lib.User
@@ -61,11 +61,11 @@ func retrieveUserInfo(token string) (lib.User, error) {
 }
 
 func login(cmd *cobra.Command, args []string) {
-	config  := lib.NewConfigFromFile()
+	config := lib.NewConfigFromFile()
 	if config.CurrentUser.Id != "" {
 		_, err := retrieveUserInfo(config.CurrentUser.Token)
 		if err != nil {
-			authenticateUser(config)	
+			authenticateUser(config)
 		}
 	} else {
 		authenticateUser(config)

@@ -21,7 +21,7 @@ type Config struct {
 	Projects     []KeyValue `json:"projects"`
 	Tags         []KeyValue `json:"tags"`
 	NewTags      []KeyValue `json:"new_tags"`
-	Entries		 []string    `json:"entries"`
+	Entries      []string   `json:"entries"`
 }
 
 func (c *Config) Save() {
@@ -76,7 +76,7 @@ func (c *Config) GetCurrentEntry() (*Entry, error) {
 	if c.CurrentEntry == "" {
 		return nil, nil
 	}
-	currentEntryPath := os.ExpandEnv("$HOME/.zeit/"+c.CurrentEntry+".json")
+	currentEntryPath := os.ExpandEnv("$HOME/.zeit/" + c.CurrentEntry + ".json")
 	bytes, err := ioutil.ReadFile(currentEntryPath)
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func (c *Config) GetCurrentEntry() (*Entry, error) {
 
 func (c *Config) GetEntryByName(entryName string) (*Entry, error) {
 	entry := &Entry{}
-	currentEntryPath := os.ExpandEnv("$HOME/.zeit/"+entryName+".json")
+	currentEntryPath := os.ExpandEnv("$HOME/.zeit/" + entryName + ".json")
 	bytes, err := ioutil.ReadFile(currentEntryPath)
 	if err != nil {
 		return entry, err
@@ -102,7 +102,7 @@ func NewConfigFromFile() *Config {
 	config := Config{}
 	b, err := ioutil.ReadFile(os.ExpandEnv("$HOME/.zeit/config.json"))
 	if err != nil {
-		config := getMockConfig();
+		config := getMockConfig()
 		createDirectory(config)
 		return config
 	} else if err = json.Unmarshal(b, &config); err != nil {
