@@ -40,16 +40,17 @@ func NewEntryFromFile(id string) *Entry {
     return &entry
 }
 
-func getTimeDifference(t string) time.Duration {
-    start, _ := time.Parse(JavascriptISOString, t)
-    return time.Now().Sub(start)
+func getTimeDifference(start string, stop string) time.Duration {
+    startTime, _ := time.Parse(JavascriptISOString, start)
+    stopTime, _ := time.Parse(JavascriptISOString, stop)
+    return stopTime.Sub(startTime)
 }
 
 func (entry *Entry) Duration() string {
     if entry.WorkDuration != "" {
         return utility.FormatToDuration(entry.WorkDuration)
     }
-    return utility.FormatToHourMinutes(getTimeDifference(entry.Start))
+    return utility.FormatToHourMinutes(getTimeDifference(entry.Start, entry.Stop))
 }
 
 func (entry *Entry) StopTracking(config *Config) {
@@ -74,7 +75,8 @@ func (entry *Entry) StartTracking(projectName string, tags []string, config *Con
     if !ok {
         return fmt.Errorf("Project %s does not exist or has not been assigned to you\n", projectName)
     } else if (currentEntry != nil) && (err == nil) {
-        duration := int(getTimeDifference(currentEntry.Start).Hours())
+        currentTime := time.Now().UTC().Format(JavascriptISOString)
+        duration := int(getTimeDifference(currentEntry.Start, currentTime).Hours())
         if (duration < 24) || (currentEntry.ProjectName == projectName) {
             startString := au.Cyan(utility.FormatToBasicTime(currentEntry.Start))
             return fmt.Errorf("Project %s has already been started at %s", currentEntry.ProjectName, startString)

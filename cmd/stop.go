@@ -59,7 +59,7 @@ var stopCmd = &cobra.Command{
 func cleanUpAllRunningNotifications() {
     err := checkScriptExists()
     if err != nil {
-        os.Exit(1)
+        os.Exit(0)
     }
     writeScriptToFile()
     killRunningScript()
