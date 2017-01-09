@@ -22,7 +22,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
+	"log"
 	"github.com/andela/zeit/lib"
 	"github.com/kjk/betterguid"
 	au "github.com/logrusorgru/aurora"
@@ -40,14 +40,14 @@ func startFunction(cmd *cobra.Command, tags []string) {
 	}
 	err := entry.StartTracking(projectName, tags, config)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Fatal(err.Error())
 	} else {
 		currentTime := au.Cyan(time.Now().Format("15:04"))
 		fmt.Printf(
 			"Starting Project %s with tags [ %s ] at %s\n",
 			projectName,
 			strings.Join(tags, " "),
-			au.Bold(currentTime),
+			au.Cyan(currentTime),
 		)
 
 		if notify {

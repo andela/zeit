@@ -1,18 +1,37 @@
 <html>
     <head>
         <title>Zeit History</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+        <style>
+            .header {
+                color: #009688;
+                font-weight: 300;
+            }
+        </style>
     </head>
     <body>
-    	<h1>Projects</h1>
-        {{range .}}
-            <h2>Started {{.Start | dateformat }}</h1>
-            <h3>Details Below: </h3>
-            <ul>
-                <li>ID: {{.ID}}</li>
-                <li>Project ID: {{.ProjectID}}</li>
-                <li>Project Name: {{.ProjectName}}</li>
-                <li>Duration: {{.Duration}}</li>
-            </ul>
-        {{end}}
+    	<h2 class="header center-align">All Entries</h2><br/><br/>
+        <table class="highlight centered">
+            <thead>
+              <tr>
+                  <th data-field="id">Project Name</th>
+                  <th data-field="name">Project ID</th>
+                  <th data-field="name">Start Date</th>
+                  <th data-field="price">Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+                {{range .}}
+                    <tr>
+                        <td>{{.ProjectName}}</td>
+                        <td>{{.ProjectID}}</td>
+                        <td>{{.Start | dateformat }}</td>
+                        <td>{{.Duration}}</td>
+                    </tr>
+                {{end}}
+            </tbody>
+      </table>
     </body>
 </html>
